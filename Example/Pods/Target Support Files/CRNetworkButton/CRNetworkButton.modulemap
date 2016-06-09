@@ -1,6 +1,0 @@
-framework module CRNetworkButton {
-  umbrella header "CRNetworkButton-umbrella.h"
-
-  export *
-  module * { export * }
-}
