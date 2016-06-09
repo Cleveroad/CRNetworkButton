@@ -1,0 +1,19 @@
+{
+  "name": "CRNetworkButton",
+  "version": "0.1.0",
+  "summary": "Button with embedded animations of loading.",
+  "description": "Button with embedded animations of loading. Configurable loading animation, also has progress mode",
+  "homepage": "https://redmine.cleveroad.com:4443/clrpods/CRNetworkButton",
+  "license": "MIT",
+  "authors": {
+    "Dmitry Pashinskiy": "pashinskiy.kh.cr@gmail.com"
+  },
+  "source": {
+    "git": "https://redmine.cleveroad.com:4443/clrpods/CRNetworkButton.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "CRNetworkButton/Classes/**/*"
+}
