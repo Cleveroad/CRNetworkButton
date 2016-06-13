@@ -5,14 +5,14 @@
 [![License](https://img.shields.io/cocoapods/l/CRNetworkButton.svg?style=flat)](http://cocoapods.org/pods/CRNetworkButton)
 [![Platform](https://img.shields.io/cocoapods/p/CRNetworkButton.svg?style=flat)](http://cocoapods.org/pods/CRNetworkButton)
 
-![Header image](/images/header.jpg)
+![Header image](/images/header.png)
 
 ## Welcome to CRNetworkButton - header text.
 
 Text1
 
 
-![Demo image](/images/demo_.gif)
+![Demo image](/images/demo.gif)
 
 
 Text2
