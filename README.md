@@ -37,6 +37,26 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "CRNetworkButton"
 ```
+and run `pod install` in terminal.
+
+```swift
+import CRNetworkButton
+```
+
+## Usage
+* ### `CRNetworkButton`
+* Supports storyboards;
+* Set `StartText` and `EndText`, it will shows on before animation and after.
+* Set `shouldAutoreverse` to back in start state automatically.
+* Set `animateOnTap` to true(by default is true), that allows you to start animation mechanism automatically then Touch Up Inside event react or use it manually
+
+```swift
+@IBAction func buttonTapped(sender: CRNetworkButton) {
+sender.startAnimate()
+}
+```
+* Set `progressMode` to true, and use `updateProgress(progress: CGFloat)`
+
 
 <br />
 ## Support
