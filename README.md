@@ -54,7 +54,8 @@ import CRNetworkButton
         sender.startAnimate()
     }
     ```
-* Set `progressMode` to true, and use `updateProgress(progress: CGFloat)`
+* Set `progressMode` to true, and use `updateProgress(progress: CGFloat)` to update current progress
+
     ```swift
     func downloadProgress(progress: CGFloat) {
         networkButton.updateProgress( progress )
