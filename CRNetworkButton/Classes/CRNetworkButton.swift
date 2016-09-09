@@ -214,6 +214,7 @@ public class CRNetworkButton: UIButton {
         borderLayer.removeAllAnimations()
         layer.removeAllAnimations()
         checkMarkLayer.removeAllAnimations()
+        errorCrossMarkLayer.removeAllAnimations()
         clearLayerContext()
         
         CATransaction.begin()
@@ -393,7 +394,7 @@ extension CRNetworkButton {
             fallthrough
             
         case .Finished:
-            setTitle(endText, forState: .Normal)
+            setTitle(stopedByError ? errorText : endText, forState: .Normal)
         }
     }
     private func clearLayerContext() {
@@ -432,6 +433,9 @@ extension CRNetworkButton {
             finishAnimation()
             
         case .Finished:
+            if stopedByError {
+                stopedByError = false
+            }
             break
         }
     }
@@ -654,7 +658,10 @@ extension CRNetworkButton {
         opacityAnim.duration = totalTimeCheckMark
         
         stopedByError ? errorCrossMarkLayer.addAnimation(opacityAnim, forKey: nil) : checkMarkLayer.addAnimation(opacityAnim, forKey: nil)
-        
+        updateText()
+        if stopedByError {
+            setTitleColor(crErrorColor, forState: .Normal)
+        }
         borderLayer.borderColor = stopedByError ? crErrorColor.CGColor : crDotColor.CGColor
         borderLayer.opacity = 1
         

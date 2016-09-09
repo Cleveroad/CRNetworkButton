@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     var timer: NSTimer?
     let requestDuration = 4.0
     let frequencyUpdate = 0.01
+    var failureCounter = 0
     
     lazy var progressPerFrequency: CGFloat = {
         let progressPerSecond = 1.0 / self.requestDuration
@@ -86,7 +87,12 @@ extension ViewController {
         
         sender.selected = true
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(2*NSEC_PER_SEC)), dispatch_get_main_queue()) {
-            sender.stopByError()
+            if self.failureCounter % 2 == 0 {
+                sender.stopByError()
+            } else {
+                sender.stopAnimate()
+            }
+            self.failureCounter += 1
         }
     }
 }

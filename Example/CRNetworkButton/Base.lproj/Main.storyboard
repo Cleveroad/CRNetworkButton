@@ -96,6 +96,7 @@
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="startText" value="SEND"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="endText" value="DONE"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="errorText" value="ERROR"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="failableButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="VPf-9s-QYU"/>
