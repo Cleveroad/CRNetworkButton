@@ -14,20 +14,15 @@ Text1
 
 ![Demo image](/images/demo.gif)
 
-
 Text2
 
 [![Article image](/images/article.jpg)](https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad)
 <br/><br/>
 [![Awesome](/images/logo-footer.png)](https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts)
 <br/>
-## Setup and usage
-
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
+* iOS 8 or higher
 
 ## Installation
 
@@ -43,9 +38,12 @@ and run `pod install` in terminal.
 import CRNetworkButton
 ```
 
+## Setup 
+CLNetworkButton uses all advantage of IB and it's feature of @IBInspectable and @IBDesignable. All of the necessary customization property is declared as @IBInspectable so you can setup it right from your storyboard. Also CLNetworkButton provides default values for all property, so you can just drag and drop it in your view and get ready to user network activity button.
+
 ## Usage
 * Supports storyboards;
-* Set `StartText` and `EndText`, it will shows on before animation and after.
+* Set `StartText` and `EndText`, it will shows on before animation and after, also you can set text for error state this text will be shown as a title in case of calling `stopByError()` by default this text is "Error".
 * Set `shouldAutoreverse` to back in start state automatically.
 * Set `animateOnTap` to true(by default is true), that allows you to start animation mechanism automatically then Touch Up Inside event react or use it manually
 
@@ -61,9 +59,26 @@ import CRNetworkButton
         networkButton.updateProgress( progress )
     }
     ```
-
+* To stop animation, call `stopAnimate()` if proccess ends with error, call `stopByError()` it will cause animation to stop with error style.
+    
+    ```swift
+    @IBAction func buttonTapped(sender: CRNetworkButton) {
+        SomeNetworkManager.performRequest(withSuccess: { (result) in
+            sender.stopAnimate()
+        }) { (error) in
+            sender.stopByError()
+        }
+    }
+    ```
 
 <br />
+
+
+## Example
+
+To run the example project, clone the repo, and run `pod install` from the Example directory first.
+
+
 ## Support
 
 If you have any other questions regarding the use of this library, please contact us for support at info@cleveroad.com (email subject: "CRNetworkButton. Support request.") 
