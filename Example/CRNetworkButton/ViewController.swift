@@ -27,8 +27,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
     
     
@@ -86,13 +84,10 @@ extension ViewController {
         }
         
         sender.selected = true
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(2*NSEC_PER_SEC)), dispatch_get_main_queue()) {
-            if self.failureCounter % 2 == 0 {
-                sender.stopByError()
-            } else {
-                sender.stopAnimate()
-            }
-            self.failureCounter += 1
+        FakeNetworkManager.performRequest(withSuccess: { (result) in
+            sender.stopAnimate()
+            }) { (error) in
+            sender.stopByError()
         }
     }
 }
