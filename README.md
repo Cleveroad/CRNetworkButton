@@ -59,7 +59,7 @@ CLNetworkButton uses all advantage of IB and it's feature of @IBInspectable and 
         networkButton.updateProgress( progress )
     }
     ```
-* To stop animation, call `stopAnimate()` if proccess ends with error, call `stopByError()` it will cause animation to stop with error style.
+* To stop animation, call `stopAnimate()`. If proccess ends with error, call `stopByError()`. It will cause animation to stop with error style.
     
     ```swift
     @IBAction func buttonTapped(sender: CRNetworkButton) {
@@ -107,12 +107,3 @@ If you have any other questions regarding the use of this library, please contac
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-
-
-
-# CRNetworkButton
-
-
-
-
-
