@@ -12,7 +12,7 @@
 Text1
 
 
-![Demo image](/images/demo.gif)
+![Demo image](/images/demo_.gif)
 
 
 Text2
