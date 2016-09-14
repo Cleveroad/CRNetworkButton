@@ -7,14 +7,14 @@
 
 ![Header image](/images/header.png)
 
-## Welcome to CRNetworkButton - header text.
+## Welcome to CRNetworkButton - Advanced Button Click Interaction
 
-Text1
+Meet a new iOS library from Cleveroad. Just in case you are sick and tired of ordinary button clicks throughout mobile apps, we can offer you something new and unique. From now on, anytime the user clicks on the button that involves addressing to the server, they will see the animation that informs them of the progress and  completion. This new engaging button click interaction is made possible with CRNetworkButton library. 
 
 
 ![Demo image](/images/demo_.gif)
 
-Text2
+If you strive to convey a clear message to your app users by means of buttons, you are more than welcome to ingrate your iOS app with CRNetworkButton library. Facilitate user’s interaction with your app!
 
 
 [![Awesome](/images/logo-footer.png)](https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts)
