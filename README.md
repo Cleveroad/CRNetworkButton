@@ -12,12 +12,11 @@
 Text1
 
 
-![Demo image](/images/demo.gif)
+![Demo image](/images/demo_.gif)
 
 Text2
 
-[![Article image](/images/article.jpg)](https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad)
-<br/><br/>
+
 [![Awesome](/images/logo-footer.png)](https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts)
 <br/>
 
