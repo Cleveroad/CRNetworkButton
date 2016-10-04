@@ -1,0 +1,14 @@
+PODS:
+  - CRNetworkButton (0.1.0)
+
+DEPENDENCIES:
+  - CRNetworkButton (from `../`)
+
+EXTERNAL SOURCES:
+  CRNetworkButton:
+    :path: ../
+
+SPEC CHECKSUMS:
+  CRNetworkButton: c580cd7005878fa0c8677b6e3f9b507539a54b08
+
+COCOAPODS: 0.39.0

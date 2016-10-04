@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ah6-Sj-AP3">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CRNetworkButton_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QyU-yl-GKW" customClass="CRNetworkButton" customModule="CRNetworkButton">
+                                <rect key="frame" x="175" y="333" width="250" height="50"/>
+                                <color key="backgroundColor" red="0.4896693083503495" green="0.74611824218280132" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="dZN-zT-W4G"/>
+                                    <constraint firstAttribute="height" constant="50" id="nkX-WW-gm2"/>
+                                </constraints>
+                                <state key="normal" title="Send">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="startText" value="SEND"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="endText" value="DONE"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="progressMode" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldAutoReverse" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="buttonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XDw-oT-pfH"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eZ9-eT-xB9" customClass="CRNetworkButton" customModule="CRNetworkButton">
+                                <rect key="frame" x="175" y="275" width="250" height="50"/>
+                                <color key="backgroundColor" red="0.4896693084" green="0.7461182422" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="cmV-Sv-AQX"/>
+                                    <constraint firstAttribute="width" constant="250" id="grh-Ht-FfM"/>
+                                </constraints>
+                                <state key="normal" title="Send">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="startText" value="SEND"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="endText" value="DONE"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldAutoReverse" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="dotLength">
+                                        <real key="value" value="0.29999999999999999"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="velocity">
+                                        <real key="value" value="0.80000000000000004"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="linesCount">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="secondButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZSP-pu-Q2W"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uPy-45-xau" customClass="CRNetworkButton" customModule="CRNetworkButton">
+                                <rect key="frame" x="175" y="217" width="250" height="50"/>
+                                <color key="backgroundColor" red="0.4896693084" green="0.7461182422" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="DfP-ad-Tkv"/>
+                                    <constraint firstAttribute="width" constant="250" id="l6C-mZ-Fp2"/>
+                                </constraints>
+                                <state key="normal" title="Send">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="startText" value="SEND"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="endText" value="DONE"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="topButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DPX-eX-fA4"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="eZ9-eT-xB9" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Hve-Dc-XkA"/>
+                            <constraint firstItem="eZ9-eT-xB9" firstAttribute="top" secondItem="uPy-45-xau" secondAttribute="bottom" constant="8" id="Mhm-pp-yhs"/>
+                            <constraint firstItem="QyU-yl-GKW" firstAttribute="top" secondItem="eZ9-eT-xB9" secondAttribute="bottom" constant="8" id="QOy-yv-K7W"/>
+                            <constraint firstItem="eZ9-eT-xB9" firstAttribute="centerX" secondItem="QyU-yl-GKW" secondAttribute="centerX" id="Va5-Ze-kVF"/>
+                            <constraint firstItem="QyU-yl-GKW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="fvM-Xu-7Iq"/>
+                            <constraint firstItem="uPy-45-xau" firstAttribute="centerX" secondItem="QyU-yl-GKW" secondAttribute="centerX" id="vGf-Kg-btE"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="JVz-Mp-3kL">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="Xc1-dc-BRF">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8z6-zR-MH3">
+                                <rect key="frame" x="447" y="7" width="133" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Collection"/>
+                                <connections>
+                                    <segue destination="SNI-9g-RNT" kind="show" id="hvt-ET-n6q"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="button" destination="QyU-yl-GKW" id="tUR-ii-RG1"/>
+                        <segue destination="SNI-9g-RNT" kind="show" id="o7O-71-gBf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="896" y="530"/>
+        </scene>
+        <!--My Collection View Controller-->
+        <scene sceneID="d9B-8u-UBf">
+            <objects>
+                <collectionViewController id="SNI-9g-RNT" customClass="MyCollectionViewController" customModule="CRNetworkButton_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="PIb-Rx-Xc2">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="thk-en-ZNJ">
+                            <size key="itemSize" width="60" height="40"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cellIdentifier" id="vOX-My-dTh">
+                                <rect key="frame" x="0.0" y="64" width="60" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="60" height="40"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hbh-CF-I8r" customClass="CRNetworkButton" customModule="CRNetworkButton">
+                                            <rect key="frame" x="2" y="11" width="56" height="18"/>
+                                            <color key="backgroundColor" red="0.4896693084" green="0.7461182422" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="6"/>
+                                            <state key="normal">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="startText" value="Send"/>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="crLineWidth">
+                                                    <real key="value" value="4"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="linesCount">
+                                                    <integer key="value" value="4"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="crDotColor">
+                                                    <color key="value" red="0.48931293110000001" green="0.58305583120000004" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="Hbh-CF-I8r" firstAttribute="leading" secondItem="vOX-My-dTh" secondAttribute="leading" constant="2" id="5O9-ib-K8O"/>
+                                    <constraint firstItem="Hbh-CF-I8r" firstAttribute="centerY" secondItem="vOX-My-dTh" secondAttribute="centerY" id="9wB-aE-CAS"/>
+                                    <constraint firstAttribute="trailing" secondItem="Hbh-CF-I8r" secondAttribute="trailing" constant="2" id="dsI-NW-K0b"/>
+                                </constraints>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="SNI-9g-RNT" id="ETb-ZO-Z7D"/>
+                            <outlet property="delegate" destination="SNI-9g-RNT" id="fQb-26-bDJ"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Reb-DN-PtJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1630" y="530"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="KpR-eR-CnV">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ah6-Sj-AP3" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="e6D-3L-P6r">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="fL0-eE-jVN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cP7-IJ-vt5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="84" y="530"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="o7O-71-gBf"/>
+    </inferredMetricsTieBreakers>
+</document>
