@@ -56,6 +56,8 @@ public class CRNetworkButton: UIButton {
     @IBInspectable public var animateOnTap: Bool = true
     /// color of dots and line in loading state
     @IBInspectable public var crDotColor: UIColor = UIColor.greenColor()
+    /// color for error stop
+    @IBInspectable public var crErrorColor: UIColor = UIColor.redColor()
     /// line width of the border
     @IBInspectable public var crLineWidth: CGFloat = 5
     /// after stop animate will set to default state
@@ -78,6 +80,8 @@ public class CRNetworkButton: UIButton {
             updateText()
         }
     }
+    
+    @IBInspectable public var errorText:String = "Error"
     
     /// will clear after calling
     public var completionHandler: (()->())?
@@ -115,6 +119,10 @@ public class CRNetworkButton: UIButton {
         return self.createCheckMark()
     }()
     
+    private lazy var errorCrossMarkLayer: CAShapeLayer = {
+       return self.createErrorCrossMark()
+    }()
+    
     private var crState: CRState = .Ready {
         didSet {
             handleCRState( crState )
@@ -134,6 +142,8 @@ public class CRNetworkButton: UIButton {
     private var boundsStartCenter: CGPoint {
         return CGPoint(x: startBounds.midX, y: startBounds.midY)
     }
+    
+    private var stopedByError:Bool = false
     
     
     /**
@@ -174,10 +184,16 @@ public class CRNetworkButton: UIButton {
         if crState == .Ready {
             layoutStartBounds()
             checkMarkLayer.position = boundsCenter
+            errorCrossMarkLayer.position = boundsCenter
             
             if checkMarkLayer.superlayer == nil {
                 checkMarkLayer.path = pathForMark().CGPath
                 layer.addSublayer( checkMarkLayer )
+            }
+            
+            if errorCrossMarkLayer.superlayer == nil {
+                errorCrossMarkLayer.path = pathForCrossMark().CGPath
+                layer.addSublayer( errorCrossMarkLayer )
             }
         }
         
@@ -198,6 +214,7 @@ public class CRNetworkButton: UIButton {
         borderLayer.removeAllAnimations()
         layer.removeAllAnimations()
         checkMarkLayer.removeAllAnimations()
+        errorCrossMarkLayer.removeAllAnimations()
         clearLayerContext()
         
         CATransaction.begin()
@@ -229,6 +246,11 @@ public class CRNetworkButton: UIButton {
             return
         }
         crState = .Finishing
+    }
+    
+    public func stopByError() {
+        stopedByError = true
+        stopAnimate()
     }
     
     public func updateProgress(progress: CGFloat) {
@@ -372,12 +394,12 @@ extension CRNetworkButton {
             fallthrough
             
         case .Finished:
-            setTitle(endText, forState: .Normal)
+            setTitle(stopedByError ? errorText : endText, forState: .Normal)
         }
     }
     private func clearLayerContext() {
         for sublayer in layer.sublayers! {
-            if sublayer == borderLayer || sublayer == checkMarkLayer {
+            if sublayer == borderLayer || sublayer == checkMarkLayer || sublayer == errorCrossMarkLayer {
                 continue
             }
             if sublayer is CAShapeLayer {
@@ -411,6 +433,9 @@ extension CRNetworkButton {
             finishAnimation()
             
         case .Finished:
+            if stopedByError {
+                stopedByError = false
+            }
             break
         }
     }
@@ -595,7 +620,7 @@ extension CRNetworkButton {
             let dot = CAShapeLayer()
             dot.bounds = dotRect
             dot.position = dotPosition
-            dot.fillColor = crDotColor.CGColor
+            dot.fillColor = stopedByError ? crErrorColor.CGColor : crDotColor.CGColor
             dot.path = UIBezierPath(ovalInRect: dot.bounds).CGPath
             dots.append(dot)
         }
@@ -607,7 +632,7 @@ extension CRNetworkButton {
         }
         
         dispatch_group_notify( finishLoadingGroup , dispatch_get_main_queue()) {
-            self.layer.backgroundColor = self.crDotColor.CGColor
+            self.layer.backgroundColor = self.stopedByError ? self.crErrorColor.CGColor : self.crDotColor.CGColor
             self.borderLayer.opacity = 0
             self.clearLayerContext()
             self.checkMarkAndBoundsAnimation()
@@ -632,9 +657,12 @@ extension CRNetworkButton {
                                 1]
         opacityAnim.duration = totalTimeCheckMark
         
-        checkMarkLayer.addAnimation(opacityAnim, forKey: nil)
-        
-        borderLayer.borderColor = crDotColor.CGColor
+        stopedByError ? errorCrossMarkLayer.addAnimation(opacityAnim, forKey: nil) : checkMarkLayer.addAnimation(opacityAnim, forKey: nil)
+        updateText()
+        if stopedByError {
+            setTitleColor(crErrorColor, forState: .Normal)
+        }
+        borderLayer.borderColor = stopedByError ? crErrorColor.CGColor : crDotColor.CGColor
         borderLayer.opacity = 1
         
         layer.masksToBounds = false
@@ -679,7 +707,7 @@ extension CRNetworkButton {
         
         let colorAnim = CABasicAnimation(keyPath: "backgroundColor")
         colorAnim.toValue = (shouldAutoReverse ? startBackgroundColor : UIColor.whiteColor()).CGColor
-        colorAnim.fromValue = crDotColor.CGColor
+        colorAnim.fromValue = stopedByError ? crErrorColor : crDotColor.CGColor
         
         let layerGroup = CAAnimationGroup()
         layerGroup.animations = [boundsAnim, colorAnim]
@@ -732,16 +760,27 @@ extension CRNetworkButton {
     
     
     // MARK: Help Methods for animations
-    private func createCheckMark() -> CAShapeLayer{
+    private func createMarkLayer() -> CAShapeLayer {
         // configure layer
-        let checkmarkLayer = CAShapeLayer()
-        checkmarkLayer.bounds = circleBounds
-        checkmarkLayer.opacity = 0
-        checkmarkLayer.fillColor = nil
-        checkmarkLayer.strokeColor = UIColor.whiteColor().CGColor
-        checkmarkLayer.lineCap = kCALineCapRound
-        checkmarkLayer.lineJoin = kCALineJoinRound
-        checkmarkLayer.lineWidth = crLineWidth / 2
+        let layer         = CAShapeLayer()
+        layer.bounds      = circleBounds
+        layer.opacity     = 0
+        layer.fillColor   = nil
+        layer.strokeColor = UIColor.whiteColor().CGColor
+        layer.lineCap     = kCALineCapRound
+        layer.lineJoin    = kCALineJoinRound
+        layer.lineWidth   = crLineWidth / 2
+        
+        return layer
+    }
+    
+    private func createErrorCrossMark() -> CAShapeLayer {
+        let crossmarkLayer = createMarkLayer()
+        return crossmarkLayer
+    }
+    
+    private func createCheckMark() -> CAShapeLayer {
+        let checkmarkLayer = createMarkLayer()
         return checkmarkLayer
     }
     private func pathForMark() -> UIBezierPath {
@@ -771,6 +810,24 @@ extension CRNetworkButton {
         path.moveToPoint( startPoint )
         path.addLineToPoint( midPoint )
         path.addLineToPoint( endPoint )
+        return path
+    }
+    
+    private func pathForCrossMark() -> UIBezierPath {
+        // geometry for crossmark layer
+        let XShift:CGFloat = 10
+        let YShift:CGFloat = 10
+        
+        let firstStartPoint  = CGPointMake(XShift, YShift)
+        let firstEndPoint    = CGPointMake(circleBounds.maxX - XShift, circleBounds.maxY - XShift)
+        let secondStartPoint = CGPointMake(circleBounds.maxX - XShift, circleBounds.minY + YShift)
+        let secondEndPoint   = CGPointMake(circleBounds.minX + XShift, circleBounds.maxY - YShift)
+        
+        let path = UIBezierPath()
+        path.moveToPoint(firstStartPoint)
+        path.addLineToPoint(firstEndPoint)
+        path.moveToPoint(secondStartPoint)
+        path.addLineToPoint(secondEndPoint)
         return path
     }
     

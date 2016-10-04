@@ -12,11 +12,13 @@ import CRNetworkButton
 class ViewController: UIViewController {
     
     @IBOutlet weak var button: CRNetworkButton!
+    @IBOutlet weak var failableButtton: CRNetworkButton!
     
     var progress: CGFloat = 0
     var timer: NSTimer?
     let requestDuration = 4.0
     let frequencyUpdate = 0.01
+    var failureCounter = 0
     
     lazy var progressPerFrequency: CGFloat = {
         let progressPerSecond = 1.0 / self.requestDuration
@@ -25,8 +27,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
     
     
@@ -72,5 +72,22 @@ extension ViewController {
         timer?.invalidate()
         timer = NSTimer.scheduledTimerWithTimeInterval(frequencyUpdate, target:self, selector: #selector(ViewController.updateProgress),
                                                        userInfo: nil, repeats: true)
+    }
+    
+    @IBAction func failableButtonTapped(sender: CRNetworkButton) {
+        guard !sender.selected else {
+            if sender.currState == .Finished {
+                sender.resetToReady()
+                sender.selected = false
+            }
+            return
+        }
+        
+        sender.selected = true
+        FakeNetworkManager.performRequest(withSuccess: { (result) in
+            sender.stopAnimate()
+            }) { (error) in
+            sender.stopByError()
+        }
     }
 }
