@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "CRNetworkButton"
-  s.version          = "1.0.1"
+  s.version          = "1.0.2"
   s.summary          = "Button with embedded animations of loading."
   s.description      = <<-DESC
 "Button with embedded animations of loading. Configurable loading animation, also has progress mode"
