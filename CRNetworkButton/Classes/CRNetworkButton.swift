@@ -10,10 +10,10 @@ import UIKit
 
 
 public enum CRState {
-    case Ready
-    case Loading
-    case Finishing
-    case Finished
+    case ready
+    case loading
+    case finishing
+    case finished
 }
 
 
@@ -22,11 +22,11 @@ private struct Constants {
     static let contextID   = "kAnimationIdentifier"
     static let layerAnimation = "kLayerAnimation"
     
-    static let prepareLoadingAnimDuration: NSTimeInterval = 0.2
-    static let resetLinesPositionAnimDuration: NSTimeInterval = 0.2
-    static let finishLoadingAnimDuration: NSTimeInterval  = 0.3
-    static let checkMarkDelay: NSTimeInterval  = 0.3
-    static let bounceDuration: NSTimeInterval  = 0.3
+    static let prepareLoadingAnimDuration: TimeInterval = 0.2
+    static let resetLinesPositionAnimDuration: TimeInterval = 0.2
+    static let finishLoadingAnimDuration: TimeInterval  = 0.3
+    static let checkMarkDelay: TimeInterval  = 0.3
+    static let bounceDuration: TimeInterval  = 0.3
 }
 
 private struct AnimKeys {
@@ -39,74 +39,72 @@ enum AnimContext: String {
     case LoadingFinishing
 }
 
-
-
 @IBDesignable
-public class CRNetworkButton: UIButton {
+open class CRNetworkButton: UIButton {
     
     // MARK: - Public variables
     
     /// measure in radians
-    @IBInspectable public var dotLength: CGFloat = 0.1
+    @IBInspectable open var dotLength: CGFloat = 0.1
     /// time for pass one lap
-    @IBInspectable public var velocity: Double = 1
+    @IBInspectable open var velocity: Double = 1
     /// lines count on loading state
-    @IBInspectable public var linesCount: UInt = 2
+    @IBInspectable open var linesCount: UInt = 2
     /// if set true, on tap will be called animation automatically
-    @IBInspectable public var animateOnTap: Bool = true
+    @IBInspectable open var animateOnTap: Bool = true
     /// color of dots and line in loading state
-    @IBInspectable public var crDotColor: UIColor = UIColor.greenColor()
+    @IBInspectable open var crDotColor: UIColor = UIColor.green
     /// color for error stop
-    @IBInspectable public var crErrorColor: UIColor = UIColor.redColor()
+    @IBInspectable open var crErrorColor: UIColor = UIColor.red
     /// line width of the border
-    @IBInspectable public var crLineWidth: CGFloat = 5
+    @IBInspectable open var crLineWidth: CGFloat = 5
     /// after stop animate will set to default state
-    @IBInspectable public var shouldAutoReverse: Bool = false
+    @IBInspectable open var shouldAutoReverse: Bool = false
     /// allow to show progress, use **updateProgress** to manage button progress
-    @IBInspectable public var progressMode: Bool = false
+    @IBInspectable open var progressMode: Bool = false
     /// border Color
-    @IBInspectable public var crBorderColor: UIColor = UIColor.lightGrayColor() {
+    @IBInspectable open var crBorderColor: UIColor = UIColor.lightGray {
         didSet {
-            borderLayer.borderColor = crBorderColor.CGColor
+            borderLayer.borderColor = crBorderColor.cgColor
         }
     }
-    @IBInspectable public var startText:String = "Go" {
+    @IBInspectable open var startText:String = "Go" {
         didSet {
             updateText()
         }
     }
-    @IBInspectable public var endText:String = "Done" {
+    @IBInspectable open var endText:String = "Done" {
         didSet {
             updateText()
         }
     }
     
-    @IBInspectable public var errorText:String = "Error"
+    @IBInspectable open var errorText:String = "Error"
     
     /// will clear after calling
-    public var completionHandler: (()->())?
+    open var completionHandler: (()->())?
     
-    public var currState: CRState {
+    open var currState: CRState {
         return crState
     }
     
     
     // MARK: - Private Vars
-    private lazy var borderLayer: CALayer = {
+    fileprivate lazy var borderLayer: CALayer = {
         let layer =  CALayer()
         layer.borderWidth = 0
-        layer.borderColor = self.crBorderColor.CGColor
+        layer.borderColor = self.crBorderColor.cgColor
         layer.backgroundColor = nil
         return layer
     }()
     
-    private lazy var progressLayer: CAShapeLayer = {
+    fileprivate lazy var progressLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = nil
-        layer.strokeColor = self.crDotColor.CGColor
+        layer.strokeColor = self.crDotColor.cgColor
         layer.bounds = self.circleBounds
         layer.path = UIBezierPath(arcCenter: self.boundsCenter, radius: self.boundsCenter.y - self.crLineWidth / 2,
-                                  startAngle: CGFloat(-M_PI_2), endAngle: 3*CGFloat(M_PI_2), clockwise: true).CGPath
+                                  startAngle: CGFloat(-M_PI_2), endAngle: 3*CGFloat(M_PI_2), clockwise: true).cgPath
         
         layer.strokeEnd = 0
         layer.lineCap = kCALineCapRound
@@ -115,50 +113,50 @@ public class CRNetworkButton: UIButton {
         return layer
     }()
     
-    private lazy var checkMarkLayer: CAShapeLayer = {
+    fileprivate lazy var checkMarkLayer: CAShapeLayer = {
         return self.createCheckMark()
     }()
     
-    private lazy var errorCrossMarkLayer: CAShapeLayer = {
+    fileprivate lazy var errorCrossMarkLayer: CAShapeLayer = {
        return self.createErrorCrossMark()
     }()
     
-    private var crState: CRState = .Ready {
+    fileprivate var crState: CRState = .ready {
         didSet {
             handleCRState( crState )
         }
     }
     
-    private var circleBounds: CGRect {
+    fileprivate var circleBounds: CGRect {
         var newRect = startBounds
-        newRect.size.width = startBounds.height
-        return newRect
+        newRect?.size.width = startBounds.height
+        return newRect!
     }
     
-    private var boundsCenter: CGPoint {
+    fileprivate var boundsCenter: CGPoint {
         return CGPoint(x: circleBounds.midX, y: circleBounds.midY)
     }
     
-    private var boundsStartCenter: CGPoint {
+    fileprivate var boundsStartCenter: CGPoint {
         return CGPoint(x: startBounds.midX, y: startBounds.midY)
     }
     
-    private var stopedByError:Bool = false
+    fileprivate var stopedByError:Bool = false
     
     
     /**
      constraints has low priority
      */
-    private var conWidth:  NSLayoutConstraint!
-    private var conHeight: NSLayoutConstraint!
+    fileprivate var conWidth:  NSLayoutConstraint!
+    fileprivate var conHeight: NSLayoutConstraint!
     
-    private var startBounds: CGRect!
-    private var startBackgroundColor: UIColor!
-    private var startTitleColor: UIColor!
+    fileprivate var startBounds: CGRect!
+    fileprivate var startBackgroundColor: UIColor!
+    fileprivate var startTitleColor: UIColor!
     
-    private let prepareGroup = dispatch_group_create()
+    fileprivate let prepareGroup = DispatchGroup()
 //    private let loadingGroup = dispatch_group_create()
-    private let finishLoadingGroup = dispatch_group_create()
+    fileprivate let finishLoadingGroup = DispatchGroup()
     
     
     
@@ -173,32 +171,32 @@ public class CRNetworkButton: UIButton {
         setupCommon()
     }
     
-    public override func prepareForInterfaceBuilder() {
+    open override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         setupCommon()
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
-        if crState == .Ready {
+        if crState == .ready {
             layoutStartBounds()
             checkMarkLayer.position = boundsCenter
             errorCrossMarkLayer.position = boundsCenter
             
             if checkMarkLayer.superlayer == nil {
-                checkMarkLayer.path = pathForMark().CGPath
+                checkMarkLayer.path = pathForMark().cgPath
                 layer.addSublayer( checkMarkLayer )
             }
             
             if errorCrossMarkLayer.superlayer == nil {
-                errorCrossMarkLayer.path = pathForCrossMark().CGPath
+                errorCrossMarkLayer.path = pathForCrossMark().cgPath
                 layer.addSublayer( errorCrossMarkLayer )
             }
         }
         
-        if crState == .Loading || crState == .Finishing{
-            if layer.animationForKey( AnimKeys.bounds ) == nil {
+        if crState == .loading || crState == .finishing{
+            if layer.animation( forKey: AnimKeys.bounds ) == nil {
                 bounds = circleBounds
             }
         }
@@ -209,8 +207,8 @@ public class CRNetworkButton: UIButton {
     
     
     // MARK: - Public Methods
-    public func resetToReady() {
-        crState = .Ready
+    open func resetToReady() {
+        crState = .ready
         borderLayer.removeAllAnimations()
         layer.removeAllAnimations()
         checkMarkLayer.removeAllAnimations()
@@ -220,48 +218,48 @@ public class CRNetworkButton: UIButton {
         CATransaction.begin()
         CATransaction.setDisableActions( true )
         
-        layer.backgroundColor = startBackgroundColor.CGColor
+        layer.backgroundColor = startBackgroundColor.cgColor
         
         checkMarkLayer.opacity = 0
         borderLayer.borderWidth = 0
-        borderLayer.borderColor = crBorderColor.CGColor
+        borderLayer.borderColor = crBorderColor.cgColor
         updateText()
         
         progressLayer.removeFromSuperlayer()
         progressLayer.strokeEnd = 0
         CATransaction.commit()
-        setTitleColor(startTitleColor, forState: .Normal)
+        setTitleColor(startTitleColor, for: UIControlState())
     }
     
-    public func startAnimate() {
-        if crState != .Ready {
+    open func startAnimate() {
+        if crState != .ready {
             resetToReady()
         }
         
-        crState = .Loading
+        crState = .loading
     }
     
-    public func stopAnimate() {
-        guard crState != .Finishing && crState != .Finished else {
+    open func stopAnimate() {
+        guard crState != .finishing && crState != .finished else {
             return
         }
-        crState = .Finishing
+        crState = .finishing
     }
     
-    public func stopByError() {
+    open func stopByError() {
         stopedByError = true
         stopAnimate()
     }
     
-    public func updateProgress(progress: CGFloat) {
+    open func updateProgress(_ progress: CGFloat) {
         progressLayer.strokeEnd = progress
     }
     
     
     
     // MARK: - Selector && Action
-    func touchUpInside(sender: CRNetworkButton) {
-        guard crState != .Finished else {
+    func touchUpInside(_ sender: CRNetworkButton) {
+        guard crState != .finished else {
             return
         }
         
@@ -274,13 +272,13 @@ public class CRNetworkButton: UIButton {
 
 
 // MARK: - Animation Delegate
-extension CRNetworkButton {
-    public override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+extension CRNetworkButton : CAAnimationDelegate {
+    public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         guard flag else {
             return
         }
         
-        guard let contextRawValue = anim.valueForKey( Constants.contextID ) as? String else {
+        guard let contextRawValue = anim.value( forKey: Constants.contextID ) as? String else {
             return
         }
         
@@ -288,13 +286,13 @@ extension CRNetworkButton {
         switch context {
             
         case .LoadingStart:
-            dispatch_group_leave( prepareGroup )
+            prepareGroup.leave()
             
         case .Loading:
             break
             
         case .LoadingFinishing:
-            dispatch_group_leave( finishLoadingGroup )
+            finishLoadingGroup.leave()
             
         }
     }
@@ -305,17 +303,17 @@ extension CRNetworkButton {
 // MARK: - Private Methods
 extension CRNetworkButton {
     
-    private func layoutStartBounds() {
+    fileprivate func layoutStartBounds() {
         startBounds = bounds
         borderLayer.bounds = startBounds
         borderLayer.cornerRadius = startBounds.midY
-        borderLayer.position = CGPointMake(startBounds.midX, startBounds.midY)
+        borderLayer.position = CGPoint(x: startBounds.midX, y: startBounds.midY)
     }
     
-    private func completeAnimation() {
+    fileprivate func completeAnimation() {
         self.updateText()
-        self.enabled = true
-        crState = .Finished
+        self.isEnabled = true
+        crState = .finished
         
         if shouldAutoReverse {
             resetToReady()
@@ -328,10 +326,10 @@ extension CRNetworkButton {
     
     
     // MARK: Setup
-    private func setupCommon() {
+    fileprivate func setupCommon() {
         // we should use old swift syntax for pass validation of podspec
-        addTarget(self, action: Selector("touchUpInside:"), //#selector(CRNetworkButton.touchUpInside(_:)),
-                  forControlEvents: .TouchUpInside)
+        addTarget(self, action: #selector(CRNetworkButton.touchUpInside(_:)), //#selector(CRNetworkButton.touchUpInside(_:)),
+                  for: .touchUpInside)
         
         contentEdgeInsets = UIEdgeInsets(top: 5,
                                          left: 20,
@@ -341,63 +339,63 @@ extension CRNetworkButton {
         setupConstraints()
     }
     
-    private func setupButton() {
-        setTitle(startText, forState: .Normal)
+    fileprivate func setupButton() {
+        setTitle(startText, for: UIControlState())
         
         layer.cornerRadius  = bounds.midY
-        layer.borderColor = crBorderColor.CGColor
+        layer.borderColor = crBorderColor.cgColor
         layer.addSublayer( borderLayer )
         
-        startTitleColor = titleColorForState(.Normal)
+        startTitleColor = titleColor(for: UIControlState())
         startBackgroundColor = backgroundColor
     }
     
     /** this method will add constraints for the width and height,
      constraint added for preventing change size according to intrinsic size
      */
-    private func setupConstraints() {
+    fileprivate func setupConstraints() {
         translatesAutoresizingMaskIntoConstraints = false
         
-        conWidth = NSLayoutConstraint(item: self, attribute: .Width,
-                                      relatedBy: .Equal, toItem: nil,
-                                      attribute: .NotAnAttribute, multiplier: 1,
+        conWidth = NSLayoutConstraint(item: self, attribute: .width,
+                                      relatedBy: .equal, toItem: nil,
+                                      attribute: .notAnAttribute, multiplier: 1,
                                       constant: bounds.width)
         
-        conHeight = NSLayoutConstraint(item: self, attribute: .Height,
-                                       relatedBy: .Equal, toItem: nil,
-                                       attribute: .NotAnAttribute, multiplier: 1,
+        conHeight = NSLayoutConstraint(item: self, attribute: .height,
+                                       relatedBy: .equal, toItem: nil,
+                                       attribute: .notAnAttribute, multiplier: 1,
                                        constant: bounds.height)
         
         conWidth.priority = UILayoutPriorityDefaultLow
         conHeight.priority = UILayoutPriorityDefaultLow
         
-        NSLayoutConstraint.activateConstraints( [conWidth, conHeight] )
+        NSLayoutConstraint.activate( [conWidth, conHeight] )
     }
     
     
     
     //MARK: Update
-    private func updateText() {
+    fileprivate func updateText() {
         guard !shouldAutoReverse else {
-            setTitle(startText, forState: .Normal)
+            setTitle(startText, for: UIControlState())
             return
         }
         
         switch crState {
-        case .Ready:
-            setTitle(startText, forState: .Normal)
+        case .ready:
+            setTitle(startText, for: UIControlState())
             
-        case .Loading:
+        case .loading:
             fallthrough
             
-        case .Finishing:
+        case .finishing:
             fallthrough
             
-        case .Finished:
-            setTitle(stopedByError ? errorText : endText, forState: .Normal)
+        case .finished:
+            setTitle(stopedByError ? errorText : endText, for: UIControlState())
         }
     }
-    private func clearLayerContext() {
+    fileprivate func clearLayerContext() {
         for sublayer in layer.sublayers! {
             if sublayer == borderLayer || sublayer == checkMarkLayer || sublayer == errorCrossMarkLayer {
                 continue
@@ -411,15 +409,15 @@ extension CRNetworkButton {
     
     
     // MARK: Managing
-    private func handleCRState(state: CRState) {
+    fileprivate func handleCRState(_ state: CRState) {
         switch state {
             
-        case .Ready:
+        case .ready:
             break
             
-        case .Loading:
+        case .loading:
             updateText()
-            enabled = false
+            isEnabled = false
             
             prepareLoadingAnimation({
                 if self.progressMode {
@@ -429,10 +427,10 @@ extension CRNetworkButton {
                 }
             })
             
-        case .Finishing:
+        case .finishing:
             finishAnimation()
             
-        case .Finished:
+        case .finished:
             if stopedByError {
                 stopedByError = false
             }
@@ -445,53 +443,53 @@ extension CRNetworkButton {
     // MARK: Animations Configuring
     
     // animate button to loading state, use completion to start loading animation
-    private func prepareLoadingAnimation(completion: (()->())?) {
+    fileprivate func prepareLoadingAnimation(_ completion: (()->())?) {
         let boundAnim = CABasicAnimation(keyPath: "bounds")
-        boundAnim.toValue = NSValue(CGRect: circleBounds)
+        boundAnim.toValue = NSValue(cgRect: circleBounds)
         
         let colorAnim = CABasicAnimation(keyPath: "backgroundColor")
-        colorAnim.toValue = UIColor.whiteColor().CGColor
+        colorAnim.toValue = UIColor.white.cgColor
         
         let layerGroup = CAAnimationGroup()
         layerGroup.animations = [boundAnim,colorAnim]
         layerGroup.duration = Constants.prepareLoadingAnimDuration
         layerGroup.delegate = self
         layerGroup.fillMode = kCAFillModeForwards
-        layerGroup.removedOnCompletion = false
+        layerGroup.isRemovedOnCompletion = false
         layerGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         assignContext(.LoadingStart, anim: layerGroup)
         
-        layer.addAnimation(layerGroup, forKey: AnimKeys.bounds)
-        dispatch_group_enter( prepareGroup )
+        layer.add(layerGroup, forKey: AnimKeys.bounds)
+        prepareGroup.enter()
         
         
         let borderAnim = CABasicAnimation(keyPath: "borderWidth")
         borderAnim.toValue = crLineWidth
         
         let borderBounds = CABasicAnimation(keyPath: "bounds")
-        borderBounds.toValue = NSValue(CGRect: circleBounds)
+        borderBounds.toValue = NSValue(cgRect: circleBounds)
         
         let borderPosition = CABasicAnimation(keyPath: "position")
-        borderPosition.toValue = NSValue(CGPoint: boundsCenter)
+        borderPosition.toValue = NSValue(cgPoint: boundsCenter)
         
         let borderGroup = CAAnimationGroup()
         borderGroup.animations = [borderAnim,borderBounds,borderPosition]
         borderGroup.duration = Constants.prepareLoadingAnimDuration
         borderGroup.delegate = self
         borderGroup.fillMode = kCAFillModeForwards
-        borderGroup.removedOnCompletion = false
+        borderGroup.isRemovedOnCompletion = false
         borderGroup.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         assignContext(.LoadingStart, anim: borderGroup)
         
-        borderLayer.addAnimation(borderGroup, forKey: nil)
-        dispatch_group_enter( prepareGroup )
+        borderLayer.add(borderGroup, forKey: nil)
+        prepareGroup.enter()
         
-        dispatch_group_notify(prepareGroup, dispatch_get_main_queue()) {
+        prepareGroup.notify(queue: DispatchQueue.main) {
             self.borderLayer.borderWidth = self.crLineWidth
             self.borderLayer.bounds = self.circleBounds
             self.borderLayer.position = self.boundsCenter
             
-            self.layer.backgroundColor = UIColor.whiteColor().CGColor
+            self.layer.backgroundColor = UIColor.white.cgColor
             self.bounds = self.circleBounds
             
             self.borderLayer.removeAllAnimations()
@@ -502,12 +500,12 @@ extension CRNetworkButton {
         
         titleLabel?.layer.opacity = 0
         if !shouldAutoReverse {
-            setTitleColor(crDotColor, forState: .Normal)
+            setTitleColor(crDotColor, for: UIControlState())
         }
     }
     
     // start default loading
-    private func startLoadingAnimation() {
+    fileprivate func startLoadingAnimation() {
         let arCenter = boundsCenter
         let radius   = circleBounds.midX - crLineWidth / 2
         
@@ -522,12 +520,12 @@ extension CRNetworkButton {
                                      radius: radius,
                                      startAngle: startAngle,
                                      endAngle: startAngle + dotLength,
-                                     clockwise: true).CGPath
+                                     clockwise: true).cgPath
             
             line.bounds = circleBounds
-            line.strokeColor = crDotColor.CGColor
+            line.strokeColor = crDotColor.cgColor
             line.lineWidth = crLineWidth
-            line.fillColor = crDotColor.CGColor
+            line.fillColor = crDotColor.cgColor
             line.lineCap = kCALineCapRound
             
             layer.insertSublayer(line, above: borderLayer)
@@ -539,24 +537,24 @@ extension CRNetworkButton {
         opacityAnim.fromValue = 0
         
         let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotation.byValue = NSNumber(double: 2*M_PI)
+        rotation.byValue = NSNumber(value: 2*M_PI as Double)
         rotation.duration = velocity
         rotation.repeatCount = Float.infinity
         
         for line in lines {
-            line.addAnimation(rotation, forKey: "lineRotation")
-            line.addAnimation(opacityAnim, forKey: nil)
+            line.add(rotation, forKey: "lineRotation")
+            line.add(opacityAnim, forKey: nil)
         }
     }
     // start loading animation, that show progress
-    private func startProgressLoadingAnimation() {
+    fileprivate func startProgressLoadingAnimation() {
         progressLayer.position = boundsCenter
         layer.insertSublayer(progressLayer, above: borderLayer)
     }
     
     // last animations divided on 3 part, this part will start mechanism
     // 1nd part of finish animation
-    private func finishAnimation() {
+    fileprivate func finishAnimation() {
         layer.masksToBounds = true
         
         // lines
@@ -569,36 +567,35 @@ extension CRNetworkButton {
             return $0 is CAShapeLayer
         }
         
-        guard let line = lines.first as? CAShapeLayer
-        where line.presentationLayer() != nil else {
+        guard let line = lines.first as? CAShapeLayer, line.presentation() != nil else {
             dotsScalingAnimation()
             return
         }
         
         // rotation for lines
         let rotation = CABasicAnimation(keyPath: "transform")
-        rotation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
+        rotation.toValue = NSValue(caTransform3D: CATransform3DIdentity)
         rotation.duration = Constants.finishLoadingAnimDuration
         rotation.delegate = self
         assignContext(.LoadingFinishing, anim: rotation)
         
         for line in lines {
-            rotation.fromValue = NSValue(CATransform3D: (line.presentationLayer() as! CAShapeLayer).transform)
-            line.addAnimation(rotation, forKey: "lineRotation")
-            dispatch_group_enter( finishLoadingGroup )
+            rotation.fromValue = NSValue(caTransform3D: (line.presentation() as! CAShapeLayer).transform)
+            line.add(rotation, forKey: "lineRotation")
+            finishLoadingGroup.enter()
         }
         
-        dispatch_group_notify(finishLoadingGroup, dispatch_get_main_queue()) {
+        finishLoadingGroup.notify(queue: DispatchQueue.main) {
             self.dotsScalingAnimation()
         }
     }
     // 2nd part of finish animation
-    private func dotsScalingAnimation() {
+    fileprivate func dotsScalingAnimation() {
         // dot will scaling
         let animationScale = CABasicAnimation(keyPath: "transform.scale")
         animationScale.duration = Constants.resetLinesPositionAnimDuration
-        animationScale.toValue = NSNumber(float: Float(bounds.height * 2/3))
-        animationScale.removedOnCompletion = false
+        animationScale.toValue = NSNumber(value: Float(bounds.height * 2/3) as Float)
+        animationScale.isRemovedOnCompletion = false
         animationScale.fillMode = kCAFillModeForwards
         animationScale.delegate = self
         assignContext(.LoadingFinishing, anim: animationScale)
@@ -612,34 +609,34 @@ extension CRNetworkButton {
         for i in 0..<linesCount {
             
             let angle = angleOffset * CGFloat(i) + (dotLength / 2)
-            var dotPosition = CGPointMake(radius * cos(angle), radius * sin(angle))
+            var dotPosition = CGPoint(x: radius * cos(angle), y: radius * sin(angle))
             dotPosition.x += bounds.midX
             dotPosition.y += bounds.midY
-            let dotRect = CGRect(origin: CGPointZero, size: dotStartSize)
+            let dotRect = CGRect(origin: CGPoint.zero, size: dotStartSize)
             
             let dot = CAShapeLayer()
             dot.bounds = dotRect
             dot.position = dotPosition
-            dot.fillColor = stopedByError ? crErrorColor.CGColor : crDotColor.CGColor
-            dot.path = UIBezierPath(ovalInRect: dot.bounds).CGPath
+            dot.fillColor = stopedByError ? crErrorColor.cgColor : crDotColor.cgColor
+            dot.path = UIBezierPath(ovalIn: dot.bounds).cgPath
             dots.append(dot)
         }
         
         for dot in dots {
             self.layer.addSublayer( dot )
-            dot.addAnimation(animationScale, forKey: "dotScale")
-            dispatch_group_enter( finishLoadingGroup )
+            dot.add(animationScale, forKey: "dotScale")
+            finishLoadingGroup.enter()
         }
         
-        dispatch_group_notify( finishLoadingGroup , dispatch_get_main_queue()) {
-            self.layer.backgroundColor = self.stopedByError ? self.crErrorColor.CGColor : self.crDotColor.CGColor
+        finishLoadingGroup.notify(queue: DispatchQueue.main) {
+            self.layer.backgroundColor = self.stopedByError ? self.crErrorColor.cgColor : self.crDotColor.cgColor
             self.borderLayer.opacity = 0
             self.clearLayerContext()
             self.checkMarkAndBoundsAnimation()
         }
     }
     // 3nd part of finish animation
-    private func checkMarkAndBoundsAnimation() {
+    fileprivate func checkMarkAndBoundsAnimation() {
         if shouldAutoReverse {
             borderLayer.borderWidth = 0
         }
@@ -652,17 +649,17 @@ extension CRNetworkButton {
         opacityAnim.duration = Constants.resetLinesPositionAnimDuration
         opacityAnim.values = [0,1,1,0]
         opacityAnim.keyTimes = [0,
-                                firstPart,
+                                NSNumber(value: firstPart),
                                 0.99,
                                 1]
         opacityAnim.duration = totalTimeCheckMark
         
-        stopedByError ? errorCrossMarkLayer.addAnimation(opacityAnim, forKey: nil) : checkMarkLayer.addAnimation(opacityAnim, forKey: nil)
+        stopedByError ? errorCrossMarkLayer.add(opacityAnim, forKey: nil) : checkMarkLayer.add(opacityAnim, forKey: nil)
         updateText()
         if stopedByError {
-            setTitleColor(crErrorColor, forState: .Normal)
+            setTitleColor(crErrorColor, for: UIControlState())
         }
-        borderLayer.borderColor = stopedByError ? crErrorColor.CGColor : crDotColor.CGColor
+        borderLayer.borderColor = stopedByError ? crErrorColor.cgColor : crDotColor.cgColor
         borderLayer.opacity = 1
         
         layer.masksToBounds = false
@@ -671,8 +668,8 @@ extension CRNetworkButton {
         var bounces = [NSValue]()
         
         for i in 0..<proportions.count {
-            let rect = CGRect(origin: startBounds.origin, size: CGSizeMake(startBounds.width * proportions[i], startBounds.height))
-            bounces.append( NSValue(CGRect: rect) )
+            let rect = CGRect(origin: startBounds.origin, size: CGSize(width: startBounds.width * proportions[i], height: startBounds.height))
+            bounces.append( NSValue(cgRect: rect) )
         }
         
         let borderBounce = CAKeyframeAnimation(keyPath: "bounds")
@@ -681,33 +678,33 @@ extension CRNetworkButton {
         borderBounce.duration = Constants.bounceDuration
         borderBounce.beginTime = CACurrentMediaTime() + opacityAnim.duration
         borderBounce.delegate = self
-        borderBounce.removedOnCompletion = false
+        borderBounce.isRemovedOnCompletion = false
         borderBounce.fillMode = kCAFillModeBoth
         assignContext(.LoadingFinishing, anim: borderBounce)
         
         let borderPosition = CABasicAnimation(keyPath: "position")
-        borderPosition.toValue = NSValue(CGPoint: boundsStartCenter)
+        borderPosition.toValue = NSValue(cgPoint: boundsStartCenter)
         borderPosition.duration = Constants.bounceDuration * borderBounce.keyTimes![1].doubleValue
         borderPosition.beginTime = CACurrentMediaTime() + opacityAnim.duration
         borderPosition.delegate = self
-        borderPosition.removedOnCompletion = false
+        borderPosition.isRemovedOnCompletion = false
         borderPosition.fillMode = kCAFillModeBoth
         assignContext(.LoadingFinishing, anim: borderPosition)
         
-        borderLayer.addAnimation(borderBounce, forKey: nil)
-        borderLayer.addAnimation(borderPosition, forKey: nil)
+        borderLayer.add(borderBounce, forKey: nil)
+        borderLayer.add(borderPosition, forKey: nil)
         
-        dispatch_group_enter( finishLoadingGroup )
-        dispatch_group_enter( finishLoadingGroup )
+        finishLoadingGroup.enter()
+        finishLoadingGroup.enter()
         
         
         let boundsAnim = CABasicAnimation(keyPath: "bounds")
-        boundsAnim.fromValue = NSValue(CGRect: (layer.presentationLayer() as! CALayer).bounds)
-        boundsAnim.toValue = NSValue(CGRect: startBounds)
+        boundsAnim.fromValue = NSValue(cgRect: (layer.presentation()!).bounds)
+        boundsAnim.toValue = NSValue(cgRect: startBounds)
         
         let colorAnim = CABasicAnimation(keyPath: "backgroundColor")
-        colorAnim.toValue = (shouldAutoReverse ? startBackgroundColor : UIColor.whiteColor()).CGColor
-        colorAnim.fromValue = stopedByError ? crErrorColor : crDotColor.CGColor
+        colorAnim.toValue = (shouldAutoReverse ? startBackgroundColor : UIColor.white).cgColor
+        colorAnim.fromValue = stopedByError ? crErrorColor : crDotColor.cgColor
         
         let layerGroup = CAAnimationGroup()
         layerGroup.animations = [boundsAnim, colorAnim]
@@ -716,12 +713,12 @@ extension CRNetworkButton {
         layerGroup.beginTime = borderBounce.beginTime
         layerGroup.delegate = self
         layerGroup.fillMode = kCAFillModeBoth
-        layerGroup.removedOnCompletion = false
+        layerGroup.isRemovedOnCompletion = false
         assignContext(.LoadingFinishing, anim: layerGroup)
         
-        layer.addAnimation(layerGroup, forKey: AnimKeys.bounds)
+        layer.add(layerGroup, forKey: AnimKeys.bounds)
         layer.bounds = startBounds
-        dispatch_group_enter( finishLoadingGroup )
+        finishLoadingGroup.enter()
         
         let opacityTitleAnim = CABasicAnimation(keyPath: "opacity")
         opacityTitleAnim.fromValue = 0
@@ -729,27 +726,27 @@ extension CRNetworkButton {
         opacityTitleAnim.duration = layerGroup.duration
         opacityTitleAnim.beginTime = layerGroup.beginTime
         opacityTitleAnim.fillMode = kCAFillModeBoth
-        opacityTitleAnim.removedOnCompletion = false
+        opacityTitleAnim.isRemovedOnCompletion = false
         
-        borderPosition.fromValue = NSValue(CGPoint: boundsCenter)
-        dispatch_group_enter( finishLoadingGroup )
+        borderPosition.fromValue = NSValue(cgPoint: boundsCenter)
+        finishLoadingGroup.enter()
         
-        titleLabel?.layer.addAnimation(opacityTitleAnim, forKey: "titleOpacityAnimation")
-        titleLabel?.layer.addAnimation(borderPosition, forKey: "titlePosition")
+        titleLabel?.layer.add(opacityTitleAnim, forKey: "titleOpacityAnimation")
+        titleLabel?.layer.add(borderPosition, forKey: "titlePosition")
         titleLabel?.layer.opacity = 1
         
-        dispatch_group_notify(finishLoadingGroup , dispatch_get_main_queue()) {
+        finishLoadingGroup.notify(queue: DispatchQueue.main) {
             if self.shouldAutoReverse {
-                self.layer.backgroundColor = self.startBackgroundColor.CGColor
+                self.layer.backgroundColor = self.startBackgroundColor.cgColor
                 self.borderLayer.borderWidth = 0
             } else {
-                self.layer.backgroundColor = UIColor.whiteColor().CGColor
+                self.layer.backgroundColor = UIColor.white.cgColor
             }
             
             self.borderLayer.position = self.boundsStartCenter
             self.borderLayer.bounds = self.startBounds
             
-            self.titleLabel?.layer.removeAnimationForKey( "titleOpacityAnimation" )
+            self.titleLabel?.layer.removeAnimation( forKey: "titleOpacityAnimation" )
             self.borderLayer.removeAllAnimations()
             self.layer.removeAllAnimations()
             
@@ -760,13 +757,13 @@ extension CRNetworkButton {
     
     
     // MARK: Help Methods for animations
-    private func createMarkLayer() -> CAShapeLayer {
+    fileprivate func createMarkLayer() -> CAShapeLayer {
         // configure layer
         let layer         = CAShapeLayer()
         layer.bounds      = circleBounds
         layer.opacity     = 0
         layer.fillColor   = nil
-        layer.strokeColor = UIColor.whiteColor().CGColor
+        layer.strokeColor = UIColor.white.cgColor
         layer.lineCap     = kCALineCapRound
         layer.lineJoin    = kCALineJoinRound
         layer.lineWidth   = crLineWidth / 2
@@ -774,16 +771,16 @@ extension CRNetworkButton {
         return layer
     }
     
-    private func createErrorCrossMark() -> CAShapeLayer {
+    fileprivate func createErrorCrossMark() -> CAShapeLayer {
         let crossmarkLayer = createMarkLayer()
         return crossmarkLayer
     }
     
-    private func createCheckMark() -> CAShapeLayer {
+    fileprivate func createCheckMark() -> CAShapeLayer {
         let checkmarkLayer = createMarkLayer()
         return checkmarkLayer
     }
-    private func pathForMark() -> UIBezierPath {
+    fileprivate func pathForMark() -> UIBezierPath {
         // geometry of the layer
         let percentShiftY:CGFloat = 0.3
         let percentShiftX:CGFloat = -0.1
@@ -795,11 +792,11 @@ extension CRNetworkButton {
         let lastAngle   = CGFloat(-1 * M_PI_4)
         
         var startPoint  = CGPoint(x: firstRadius * cos(firstAngle), y: firstRadius * sin(firstAngle))
-        var midPoint    = CGPointZero
+        var midPoint    = CGPoint.zero
         var endPoint    = CGPoint(x: lastRadius * cos(lastAngle), y: lastRadius * sin(lastAngle))
         
-        let correctedPoint = CGPointMake(boundsCenter.x + (boundsCenter.x * percentShiftX),
-                                         boundsCenter.y + (boundsCenter.y * percentShiftY))
+        let correctedPoint = CGPoint(x: boundsCenter.x + (boundsCenter.x * percentShiftX),
+                                         y: boundsCenter.y + (boundsCenter.y * percentShiftY))
         
         startPoint.addPoint( correctedPoint )
         midPoint.addPoint( correctedPoint )
@@ -807,34 +804,34 @@ extension CRNetworkButton {
         
         
         let path = UIBezierPath()
-        path.moveToPoint( startPoint )
-        path.addLineToPoint( midPoint )
-        path.addLineToPoint( endPoint )
+        path.move( to: startPoint )
+        path.addLine( to: midPoint )
+        path.addLine( to: endPoint )
         return path
     }
     
-    private func pathForCrossMark() -> UIBezierPath {
+    fileprivate func pathForCrossMark() -> UIBezierPath {
         // geometry for crossmark layer
         let XShift:CGFloat = 10
         let YShift:CGFloat = 10
         
-        let firstStartPoint  = CGPointMake(XShift, YShift)
-        let firstEndPoint    = CGPointMake(circleBounds.maxX - XShift, circleBounds.maxY - XShift)
-        let secondStartPoint = CGPointMake(circleBounds.maxX - XShift, circleBounds.minY + YShift)
-        let secondEndPoint   = CGPointMake(circleBounds.minX + XShift, circleBounds.maxY - YShift)
+        let firstStartPoint  = CGPoint(x: XShift, y: YShift)
+        let firstEndPoint    = CGPoint(x: circleBounds.maxX - XShift, y: circleBounds.maxY - XShift)
+        let secondStartPoint = CGPoint(x: circleBounds.maxX - XShift, y: circleBounds.minY + YShift)
+        let secondEndPoint   = CGPoint(x: circleBounds.minX + XShift, y: circleBounds.maxY - YShift)
         
         let path = UIBezierPath()
-        path.moveToPoint(firstStartPoint)
-        path.addLineToPoint(firstEndPoint)
-        path.moveToPoint(secondStartPoint)
-        path.addLineToPoint(secondEndPoint)
+        path.move(to: firstStartPoint)
+        path.addLine(to: firstEndPoint)
+        path.move(to: secondStartPoint)
+        path.addLine(to: secondEndPoint)
         return path
     }
     
-    private func assignContext(context:AnimContext, anim: CAAnimation ) {
+    fileprivate func assignContext(_ context:AnimContext, anim: CAAnimation ) {
         anim.setValue(context.rawValue, forKey: Constants.contextID)
     }
-    private func assignLayer(aLayer: CALayer, anim: CAAnimation) {
+    fileprivate func assignLayer(_ aLayer: CALayer, anim: CAAnimation) {
         anim.setValue(aLayer, forKey: Constants.layerAnimation)
     }
 }
@@ -843,7 +840,7 @@ extension CRNetworkButton {
 
 //MARK: CGPoint customization
 extension CGPoint {
-    private mutating func addPoint(point: CGPoint) {
+    fileprivate mutating func addPoint(_ point: CGPoint) {
         x += point.x
         y += point.y
     }
