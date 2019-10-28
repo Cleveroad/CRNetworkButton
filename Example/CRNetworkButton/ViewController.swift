@@ -9,7 +9,7 @@
 import UIKit
 import CRNetworkButton
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     @IBOutlet weak var button: CRNetworkButton!
     @IBOutlet weak var failableButtton: CRNetworkButton!
@@ -29,8 +29,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    
-    func updateProgress() {
+    @objc func updateProgress() {
         guard progress <= 1 else {
             timer?.invalidate()
             button.stopAnimate()
@@ -45,8 +44,10 @@ class ViewController: UIViewController {
 
 
 
-//MARK: - Action
+// MARK: - Action
+
 extension ViewController {
+    
     @IBAction func topButtonTapped(_ sender: CRNetworkButton) {
         guard !sender.isSelected else {
             if sender.currState == .finished {
@@ -57,21 +58,24 @@ extension ViewController {
         }
         
         sender.isSelected = true
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(2*NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2*NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
             sender.stopAnimate()
         }
     }
     
     @IBAction func secondButtonTapped(_ sender: CRNetworkButton) {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(2*NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2*NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
             sender.stopAnimate()
         }
     }
     
     @IBAction func buttonTapped(_ sender: CRNetworkButton) {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: frequencyUpdate, target:self, selector: #selector(ViewController.updateProgress),
-                                                       userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: frequencyUpdate,
+                                     target:self,
+                                     selector: #selector(ViewController.updateProgress),
+                                     userInfo: nil,
+                                     repeats: true)
     }
     
     @IBAction func failableButtonTapped(_ sender: CRNetworkButton) {
